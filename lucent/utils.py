@@ -1,8 +1,10 @@
+import io
 import os
 import hashlib
 import tempfile
 import requests
 import matplotlib.pyplot as plt
+import PIL
 from torchvision.utils import make_grid
 
 
@@ -60,3 +62,10 @@ def fetch(url, fp=None):
             f.write(dat)
         os.rename(fp + ".tmp", fp)
     return dat, fp
+
+
+def fetch_image(url):
+    resp = requests.get(
+        "https://raw.githubusercontent.com/lukemelas/EfficientNet-PyTorch/master/examples/simple/img2.jpg"
+    )
+    return PIL.Image.open(io.BytesIO(resp.content))
