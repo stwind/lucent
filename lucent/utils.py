@@ -52,6 +52,10 @@ def decorrelate(img, corr):
     return torch.einsum("nchw,cd->ndhw", img, torch.from_numpy(corr)).sigmoid()
 
 
+def center_crop(img, size):
+    return img[size:-size, size:-size, :]
+
+
 def fetch(url, fp=None):
     if not fp:
         fp = os.path.join(
