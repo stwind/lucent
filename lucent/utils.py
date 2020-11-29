@@ -2,12 +2,21 @@ import os
 import hashlib
 import tempfile
 import requests
+import matplotlib.pyplot as plt
 
 
 def print_topk(out, labels, k=5):
     probs = out.softmax(dim=1)[0]
     for i in out.topk(k).indices[0].tolist():
         print("{:<75} ({:.2f}%)".format(labels[i], probs[i] * 100))
+
+
+def plot_img(img, figsize=(3, 3)):
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(img)
+    ax.set_axis_off()
+    with plt.rc_context({"savefig.pad_inches": 0}):
+        plt.show()
 
 
 def to_hwc(x):
