@@ -3,6 +3,7 @@ import os
 import hashlib
 import tempfile
 import requests
+import numpy as np
 import matplotlib.pyplot as plt
 import PIL
 import torch
@@ -54,6 +55,18 @@ def decorrelate(img, corr):
 
 def center_crop(img, size):
     return img[size:-size, size:-size, :]
+
+
+def stitch_images(images, nrow=1):
+    n = len(images)
+    h, w, c = images[0].shape
+    ncol = n // nrow
+    img = np.zeros((h * nrow, w * ncol, c), dtype=np.float32)
+    for i, d in enumerate(images):
+        ix, iy = divmod(i, ncol)
+        img[ix * h : (ix + 1) * h, iy * w : (iy + 1) * w, :] = d
+
+    return img
 
 
 def fetch(url, fp=None):
