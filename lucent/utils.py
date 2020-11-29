@@ -5,6 +5,7 @@ import tempfile
 import requests
 import matplotlib.pyplot as plt
 import PIL
+import torch
 from torchvision.utils import make_grid
 
 
@@ -45,6 +46,10 @@ def to_chw(x):
 def minmax_scale(x):
     mn, mx = x.max(), x.min()
     return (x - mn) / (mx - mn)
+
+
+def decorrelate(img, corr):
+    return torch.einsum("nchw,cd->ndhw", img, torch.from_numpy(corr)).sigmoid()
 
 
 def fetch(url, fp=None):

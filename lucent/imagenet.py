@@ -18,3 +18,7 @@ normalize = Normalize(MEAN, STD)
 denormalize = Normalize(-MEAN / STD, 1 / STD)
 
 preprocess = Compose([Resize(IMAGE_SIZE), ToTensor(), normalize])
+
+
+def deprocess(img):
+    return denormalize(img.detach().cpu()).clip(0, 1)
