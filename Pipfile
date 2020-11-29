@@ -24,6 +24,7 @@ seaborn = "*"
 umap-learn = "*"
 torch = "*"
 torchvision = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

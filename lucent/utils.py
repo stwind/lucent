@@ -1,3 +1,9 @@
+import os
+import hashlib
+import tempfile
+import requests
+
+
 def print_topk(out, labels, k=5):
     probs = out.softmax(dim=1)[0]
     for i in out.topk(k).indices[0].tolist():
@@ -23,3 +29,20 @@ def to_chw(x):
 def minmax_scale(x):
     mn, mx = x.max(), x.min()
     return (x - mn) / (mx - mn)
+
+
+def fetch(url, fp=None):
+    if not fp:
+        fp = os.path.join(
+            tempfile.gettempdir(), hashlib.md5(url.encode("utf-8")).hexdigest()
+        )
+    if os.path.isfile(fp) and os.stat(fp).st_size > 0:
+        with open(fp, "rb") as f:
+            dat = f.read()
+    else:
+        print("fetching {}".format(url))
+        dat = requests.get(url).content
+        with open(fp + ".tmp", "wb") as f:
+            f.write(dat)
+        os.rename(fp + ".tmp", fp)
+    return dat, fp
