@@ -44,6 +44,10 @@ def to_chw(x):
     return x.permute(2, 0, 1)
 
 
+def to_var(x, device="cpu"):
+    return x.to(device).requires_grad_(True)
+
+
 def minmax_scale(x):
     mn, mx = x.max(), x.min()
     return (x - mn) / (mx - mn)
