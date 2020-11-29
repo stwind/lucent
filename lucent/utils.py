@@ -61,14 +61,19 @@ def center_crop(img, size):
     return img[size:-size, size:-size, :]
 
 
-def stitch_images(images, nrow=1):
+def stitch_images(images, nrow=1, gap=1, bg=0):
     n = len(images)
     h, w, c = images[0].shape
     ncol = n // nrow
-    img = np.zeros((h * nrow, w * ncol, c), dtype=np.float32)
+    img = np.zeros(
+        (h * nrow + gap * (nrow + 1), w * ncol + gap * (ncol + 1), c), dtype=np.float32
+    )
+    img.fill(bg)
     for i, d in enumerate(images):
         ix, iy = divmod(i, ncol)
-        img[ix * h : (ix + 1) * h, iy * w : (iy + 1) * w, :] = d
+        x = gap + ix * (h + gap)
+        y = gap + iy * (w + gap)
+        img[x : x + h, y : y + w, :] = d
 
     return img
 
