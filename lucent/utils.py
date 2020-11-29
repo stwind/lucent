@@ -3,6 +3,7 @@ import hashlib
 import tempfile
 import requests
 import matplotlib.pyplot as plt
+from torchvision.utils import make_grid
 
 
 def print_topk(out, labels, k=5):
@@ -17,6 +18,10 @@ def plot_img(img, figsize=(3, 3)):
     ax.set_axis_off()
     with plt.rc_context({"savefig.pad_inches": 0}):
         plt.show()
+
+
+def plot_img_batch(imgs):
+    plot_img(to_hwc(make_grid(imgs)))
 
 
 def to_hwc(x):
