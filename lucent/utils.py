@@ -131,4 +131,4 @@ def fetch_image(url):
     resp = requests.get(
         "https://raw.githubusercontent.com/lukemelas/EfficientNet-PyTorch/master/examples/simple/img2.jpg"
     )
-    return PIL.Image.open(io.BytesIO(resp.content))
+    return Image.open(io.BytesIO(resp.content))
