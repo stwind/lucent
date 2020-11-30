@@ -128,7 +128,5 @@ def fetch(url, fp=None):
 
 
 def fetch_image(url):
-    resp = requests.get(
-        "https://raw.githubusercontent.com/lukemelas/EfficientNet-PyTorch/master/examples/simple/img2.jpg"
-    )
+    resp = requests.get(url)
     return Image.open(io.BytesIO(resp.content))
