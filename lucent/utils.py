@@ -5,9 +5,10 @@ import tempfile
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
-import PIL
+import matplotlib.font_manager as fontman
 import torch
 from torchvision.utils import make_grid
+from PIL import Image, ImageFont, ImageDraw
 
 
 def print_topk(out, labels, k=5):
@@ -61,21 +62,52 @@ def center_crop(img, size):
     return img[size:-size, size:-size, :]
 
 
-def stitch_images(images, nrow=1, gap=1, bg=0):
-    n = len(images)
-    h, w, c = images[0].shape
-    ncol = n // nrow
-    img = np.zeros(
-        (h * nrow + gap * (nrow + 1), w * ncol + gap * (ncol + 1), c), dtype=np.float32
+def get_font_files(name):
+    return list(
+        filter(
+            lambda path: name.lower() in os.path.basename(path).lower(),
+            fontman.findSystemFonts(),
+        )
     )
-    img.fill(bg)
-    for i, d in enumerate(images):
+
+
+def draw_text(
+    img,
+    text,
+    position=(8, 5),
+    fg="white",
+    bg="black",
+    font_name="LiberationSansNarrow-Bold.ttf",
+    font_size=13,
+    pad=2,
+):
+    font_files = get_font_files(font_name)
+    if not font_files:
+        font = ImageFont.load_default()
+    else:
+        font = ImageFont.truetype(font_files[0], font_size)
+    draw = ImageDraw.Draw(img)
+    x, y = position
+    w, h = font.getsize(text)
+    draw.rectangle((x - pad, y, x + w + pad, y + h + pad), fill=bg)
+    draw.text(position, text, fill=fg, font=font)
+    return img
+
+
+def stitch_images(images, nrow=1, gap=1, bg="black"):
+    n = len(images)
+    ncol = n // nrow
+    w, h = images[0].width, images[0].height
+    dst = Image.new(
+        "RGB", (w * nrow + gap * (nrow + 1), w * ncol + gap * (ncol + 1)), bg
+    )
+    for i, src in enumerate(images):
         ix, iy = divmod(i, ncol)
         x = gap + ix * (h + gap)
         y = gap + iy * (w + gap)
-        img[x : x + h, y : y + w, :] = d
+        dst.paste(src, (x, y))
 
-    return img
+    return dst
 
 
 def fetch(url, fp=None):
