@@ -99,12 +99,12 @@ def stitch_images(images, nrow=1, gap=1, bg="black"):
     ncol = n // nrow
     w, h = images[0].width, images[0].height
     dst = Image.new(
-        "RGB", (w * nrow + gap * (nrow + 1), w * ncol + gap * (ncol + 1)), bg
+        "RGB", (w * ncol + gap * (ncol + 1), h * nrow + gap * (nrow + 1)), bg
     )
     for i, src in enumerate(images):
         ix, iy = divmod(i, ncol)
-        x = gap + ix * (h + gap)
-        y = gap + iy * (w + gap)
+        y = gap + ix * (h + gap)
+        x = gap + iy * (w + gap)
         dst.paste(src, (x, y))
 
     return dst
