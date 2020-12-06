@@ -30,7 +30,7 @@ def optimize(
 ):
     optimizer = torch.optim.Adam([img], lr=lr, weight_decay=weight_decay)
 
-    for i in progress_bar(range(steps)):
+    for i in progress(range(steps)):
         model(img)
         objective(img).backward()
         optimizer.step()
