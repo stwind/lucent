@@ -7,15 +7,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fontman
 import torch
+import fastprogress.fastprogress
 from torchvision.utils import make_grid
 from PIL import Image, ImageFont, ImageDraw
-from fastprogress.fastprogress import progress_bar
 
 
 def progress_bar(**kwargs):
     opts = {"leave": False}
     opts.update(**kwargs)
-    return lambda gen: progress_bar(gen, **opts)
+    return lambda gen: fastprogress.progress_bar(gen, **opts)
 
 
 def print_topk(out, labels, k=5):
