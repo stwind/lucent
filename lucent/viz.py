@@ -26,7 +26,7 @@ class T(object):
 
 
 def optimize(
-    model, objective, img, steps=20, lr=0.05, weight_decay=1e-6, progress=progress_bar
+    model, objective, img, steps=20, lr=0.05, weight_decay=1e-6, progress=progress_bar()
 ):
     optimizer = torch.optim.Adam([img], lr=lr, weight_decay=weight_decay)
 
