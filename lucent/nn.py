@@ -84,9 +84,9 @@ class Jitter(nn.Module):
         self.size = size
 
     def forward(self, img):
-        sz = img.size(2) - self.size
+        w, h = img.size(2) - self.size, img.size(3) - self.size
         ox, oy = np.random.randint(0, self.size // 2 + 1, 2)
-        return img[:, :, ox : ox + sz, ox : ox + sz]
+        return img[:, :, ox : ox + w, ox : ox + h]
 
 
 class Pad(nn.Module):
