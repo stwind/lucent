@@ -25,6 +25,7 @@ umap-learn = "*"
 torch = "*"
 torchvision = "*"
 requests = "*"
+tensorflow = "*"
 
 [requires]
 python_version = "3.8"
