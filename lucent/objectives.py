@@ -35,3 +35,13 @@ class DeepDream(Objective):
 
     def forward(self, inputs):
         return self.t(0).square().mean() + self.regularize(inputs)
+
+
+class Direction(Objective):
+    def __init__(self, module, vec, **kwargs):
+        super().__init__([module], **kwargs)
+        self.vec = vec.reshape(1, -1, 1, 1).to(self.device)
+
+    def forward(self, inputs):
+        loss = torch.sum(self.t(0) * self.vec, 1).mean()
+        return loss + self.regularize(inputs)
