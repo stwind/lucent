@@ -29,9 +29,9 @@ class Channel(Objective):
         return self.weight * loss + self.regularize(inputs)
 
 
-class Layer(Objective):
+class DeepDream(Objective):
     def __init__(self, module, **kwargs):
         super().__init__([module], **kwargs)
 
     def forward(self, inputs):
-        return self.t(0).mean() + self.regularize(inputs)
+        return self.t(0).square().mean() + self.regularize(inputs)
