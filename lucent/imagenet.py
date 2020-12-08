@@ -1,6 +1,8 @@
 import numpy as np
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
+from lucent.utils import fetch
+
 
 MEAN = np.array([0.485, 0.456, 0.406])
 STD = np.array([0.229, 0.224, 0.225])
@@ -22,3 +24,11 @@ preprocess = Compose([Resize(IMAGE_SIZE), ToTensor(), normalize])
 
 def deprocess(img):
     return denormalize(img.detach().cpu()).clip(0, 1)
+
+
+LABEL_URL = "https://gist.githubusercontent.com/yrevar/942d3a0ac09ec9e5eb3a/raw/238f720ff059c1f82f368259d1ca4ffa5dd8f9f5/imagenet1000_clsidx_to_labels.txt"
+
+
+def load_labels():
+    lbls_dat, _ = fetch(LABEL_URL)
+    return eval(lbls_dat)
