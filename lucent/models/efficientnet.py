@@ -1,6 +1,7 @@
 import math
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils import model_zoo
 
 from lucent.nn import MBConv, Swish
 
@@ -29,8 +30,19 @@ SCALES = {
     "l2": (4.3, 5.3),
 }
 
+url_map = {
+    "b0": "https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b0-355c32eb.pth",
+}
+
 
 class EfficientNet(nn.Module):
+    @staticmethod
+    def from_pretrained(name):
+        model = EfficientNet()
+        sd = model_zoo.load_url(url_map[name])
+        model.load_weights(sd)
+        return model
+
     def __init__(
         self,
         cin=3,
