@@ -109,7 +109,7 @@ class RandomScale(nn.Module):
         return F.interpolate(
             img,
             mode="bilinear",
-            align_corners=False,
+            align_corners=True,
             scale_factor=(scale, scale),
             recompute_scale_factor=True,
         )
