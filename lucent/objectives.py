@@ -57,5 +57,6 @@ class Direction(Objective):
         self.vec = vec.reshape(1, -1, 1, 1)
 
     def forward(self, inputs):
-        loss = torch.sum(self.t(0) * self.vec, 1).mean()
-        return loss.to(inputs.device) + self.regularize(inputs)
+        vec = self.vec.to(inputs.device)
+        loss = torch.sum(self.t(0) * vec, 1).mean()
+        return loss + self.regularize(inputs)
