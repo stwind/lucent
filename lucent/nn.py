@@ -117,10 +117,9 @@ class RandomScale(nn.Module):
 
 class RandomRotate(nn.Module):
     ## https://stackoverflow.com/questions/64197754/how-do-i-rotate-a-pytorch-image-tensor-around-its-center-in-a-way-that-supports
-    def __init__(self, rads, device="cpu"):
+    def __init__(self, rads):
         super().__init__()
         self.rads = rads
-        self.device = device
 
     def _rot_mat(self, theta):
         theta = torch.tensor(theta)
@@ -135,7 +134,7 @@ class RandomRotate(nn.Module):
         theta = np.random.choice(self.rads)
         mat = self._rot_mat(theta).unsqueeze(0)
 
-        grid = F.affine_grid(mat, img.size(), align_corners=False).to(self.device)
+        grid = F.affine_grid(mat, img.size(), align_corners=False).to(img.device)
         x = F.grid_sample(img, grid, align_corners=False)
         return x
 
