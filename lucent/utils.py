@@ -181,9 +181,8 @@ def conv_transpose2d_to(
     offset_w = (iw - 1) * sw + kw - ow
     oph, opw = offset_h % 2, offset_w % 2
 
-    x = F.pad(x, [1, 1 - opw, 1, 1 - oph])
     return F.conv_transpose2d(
-        x,
+        F.pad(x, [1, 1 - opw, 1, 1 - oph]),
         weight,
         bias=bias,
         stride=(sh, sw),
