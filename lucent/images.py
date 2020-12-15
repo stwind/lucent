@@ -1,7 +1,11 @@
+import io
 import os
+import requests
 
 import matplotlib.font_manager as fontman
 from PIL import Image, ImageFont, ImageDraw
+
+from lucent.utils import fetch_url
 
 
 def get_font_files(name):
@@ -50,3 +54,8 @@ def stitch(images, nrow=1, gap=1, bg="black"):
         dst.paste(src, (x, y))
 
     return dst
+
+
+def fetch(url):
+    resp = requests.get(url)
+    return Image.open(io.BytesIO(resp.content))
