@@ -58,7 +58,7 @@ def center_crop(img, size):
     return img[size:-size, size:-size, :]
 
 
-def fetch(url, fp=None):
+def fetch_url(url, fp=None):
     if not fp:
         fp = os.path.join(
             tempfile.gettempdir(), hashlib.md5(url.encode("utf-8")).hexdigest()
@@ -73,11 +73,6 @@ def fetch(url, fp=None):
             f.write(dat)
         os.rename(fp + ".tmp", fp)
     return dat, fp
-
-
-def fetch_image(url):
-    resp = requests.get(url)
-    return Image.open(io.BytesIO(resp.content))
 
 
 def binomcoeffs(n):
