@@ -5,7 +5,6 @@ import tempfile
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fontman
 import torch
 import fastprogress.fastprogress
 import torch.nn.functional as F
@@ -24,18 +23,6 @@ def print_topk(out, labels, k=5):
     probs = out.softmax(dim=1)[0]
     for i in out.topk(k).indices[0].tolist():
         print("{:<75} ({:.2f}%)".format(labels[i], probs[i] * 100))
-
-
-def plot_img(img, figsize=(3, 3)):
-    fig, ax = plt.subplots(figsize=figsize)
-    ax.imshow(img)
-    ax.set_axis_off()
-    with plt.rc_context({"savefig.pad_inches": 0}):
-        plt.show()
-
-
-def plot_img_batch(imgs):
-    plot_img(to_hwc(make_grid(imgs)))
 
 
 def to_hwc(x):
@@ -71,54 +58,6 @@ def center_crop(img, size):
     return img[size:-size, size:-size, :]
 
 
-def get_font_files(name):
-    return list(
-        filter(
-            lambda path: name.lower() in os.path.basename(path).lower(),
-            fontman.findSystemFonts(),
-        )
-    )
-
-
-def draw_text(
-    img,
-    text,
-    position=(8, 5),
-    fg="white",
-    bg="black",
-    font_name="LiberationSansNarrow-Bold.ttf",
-    font_size=13,
-    pad=2,
-):
-    font_files = get_font_files(font_name)
-    if not font_files:
-        font = ImageFont.load_default()
-    else:
-        font = ImageFont.truetype(font_files[0], font_size)
-    draw = ImageDraw.Draw(img)
-    x, y = position
-    w, h = font.getsize(text)
-    draw.rectangle((x - pad, y, x + w + pad, y + h + pad), fill=bg)
-    draw.text(position, text, fill=fg, font=font)
-    return img
-
-
-def stitch_images(images, nrow=1, gap=1, bg="black"):
-    n = len(images)
-    ncol = n // nrow
-    w, h = images[0].width, images[0].height
-    dst = Image.new(
-        "RGB", (w * ncol + gap * (ncol + 1), h * nrow + gap * (nrow + 1)), bg
-    )
-    for i, src in enumerate(images):
-        ix, iy = divmod(i, ncol)
-        y = gap + ix * (h + gap)
-        x = gap + iy * (w + gap)
-        dst.paste(src, (x, y))
-
-    return dst
-
-
 def fetch(url, fp=None):
     if not fp:
         fp = os.path.join(
@@ -139,12 +78,6 @@ def fetch(url, fp=None):
 def fetch_image(url):
     resp = requests.get(url)
     return Image.open(io.BytesIO(resp.content))
-
-
-def display_pil_image(img):
-    bio = io.BytesIO()
-    img.save(bio, format="png")
-    display.display(display.Image(bio.getvalue(), format="png", retina=True))
 
 
 def binomcoeffs(n):
