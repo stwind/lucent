@@ -1,7 +1,7 @@
 import numpy as np
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 
-from lucent.utils import fetch
+from lucent.utils import fetch_url
 
 
 MEAN = np.array([0.485, 0.456, 0.406])
@@ -30,5 +30,5 @@ LABEL_URL = "https://gist.githubusercontent.com/yrevar/942d3a0ac09ec9e5eb3a/raw/
 
 
 def load_labels():
-    lbls_dat, _ = fetch(LABEL_URL)
+    lbls_dat, _ = fetch_url(LABEL_URL)
     return eval(lbls_dat)
