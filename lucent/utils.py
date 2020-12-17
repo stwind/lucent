@@ -79,11 +79,11 @@ def binomcoeffs(n):
     return (np.poly1d([1, 1]) ** n).coeffs
 
 
-def binomial_filter(n, channel=3):
+def binomial_filter(n, channel=3, dtype=np.float32):
     coef = binomcoeffs(n - 1)
     k = np.outer(coef, coef)
-    return np.expand_dims(k / k.sum(), (2, 3)).astype(np.float32) * np.eye(
-        channel, dtype=np.float32
+    return np.expand_dims(k / k.sum(), (2, 3)).astype(dtype) * np.eye(
+        channel, dtype=dtype
     )
 
 

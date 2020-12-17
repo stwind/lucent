@@ -18,11 +18,12 @@ def show_array(img, figsize=(3, 3)):
 def show_arrays(imgs, figsize=(12, 5), nrows=1):
     n = len(imgs)
     ncols = n // nrows
-    _, ax = plt.subplots(nrows, ncols, figsize=figsize)
+    fig = plt.figure(figsize=figsize)
 
     for i, img in enumerate(imgs):
-        ax[i].imshow(img)
-        ax[i].set_axis_off()
+        ax = fig.add_subplot(nrows, ncols, i + 1)
+        ax.imshow(img)
+        ax.set_axis_off()
 
     plt.tight_layout()
     plt.show()
