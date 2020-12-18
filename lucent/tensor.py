@@ -1,7 +1,7 @@
 from contextlib import AbstractContextManager
 
 
-class TensorHooks(AbstractContextManager):
+class Hooks(AbstractContextManager):
     def __init__(self, tensor, funcs):
         self.hooks = []
         for f in funcs:

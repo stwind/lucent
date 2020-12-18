@@ -17,6 +17,9 @@ class T(object):
     def _hook_fn(self, name, module, inp, output):
         self.outputs[name] = output
 
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def close(self):
         for hook in self.hooks:
             hook.remove()
