@@ -16,8 +16,7 @@ def show_array(img, figsize=(3, 3)):
 
 
 def show_arrays(imgs, figsize=(12, 5), nrows=1):
-    n = len(imgs)
-    ncols = n // nrows
+    ncols = len(imgs) // nrows
     fig = plt.figure(figsize=figsize)
 
     for i, img in enumerate(imgs):
