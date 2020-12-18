@@ -1,11 +1,13 @@
 from functools import partial
+from contextlib import AbstractContextManager
+
 
 import torch
 
 from lucent.utils import progress_bar
 
 
-class T(object):
+class T(AbstractContextManager):
     def __init__(self, modules):
         self.hooks = []
         if isinstance(modules, list):
