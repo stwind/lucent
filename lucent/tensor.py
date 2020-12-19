@@ -1,4 +1,6 @@
+import torch
 from contextlib import AbstractContextManager
+from lucent.utils import binomial_filter, lap_normalize
 
 
 class Hooks(AbstractContextManager):
@@ -10,3 +12,12 @@ class Hooks(AbstractContextManager):
     def __exit__(self, exc_type, exc_value, traceback):
         for hook in self.hooks:
             hook.remove()
+
+
+def lap_normalize(lap_n, filter_size=5):
+    kernel = torch.from_numpy(binomial_filter(filter_size)).permute(2, 3, 0, 1)
+    return lambda g: lap_normalize(g, kernel.to(g.device), lap_n)
+
+
+def normalize_std():
+    return lambda g: g / g.std()

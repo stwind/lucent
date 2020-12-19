@@ -1,6 +1,6 @@
 from functools import partial
 from contextlib import AbstractContextManager
-
+from fastprogress.fastprogress import progress_bar
 
 import torch
 
@@ -30,15 +30,34 @@ class T(AbstractContextManager):
         return self.outputs[key]
 
 
-def optimize(
-    model, objective, img, steps=20, lr=0.05, weight_decay=1e-6, progress=progress_bar()
-):
-    optimizer = torch.optim.Adam([img], lr=lr, weight_decay=weight_decay)
-
-    for i in progress(range(steps)):
+def optimize(model, optimizer, img, calc_grad, epochs=256):
+    for i in progress_bar(range(epochs)):
         model(img)
-        objective(img).backward()
+
+        calc_grad(img)
+
         optimizer.step()
         optimizer.zero_grad()
 
     return img
+
+
+def calc_by_objective(objective):
+    return lambda img: objective(img).backward()
+
+
+def calc_by_masked_objectives(objectives):
+    def inner(img):
+        n = len(objectives)
+        grads = []
+        for i in range(n):
+            obj, mask = objectives[i]
+            retain_graph = i < n - 1
+            obj(img).backward(retain_graph=retain_graph)
+            grads.append(img.grad * mask)
+            img.grad.zero_()
+        g = sum(grads)
+        g /= g.std()
+        img.grad = g
+
+    return inner
