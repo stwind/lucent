@@ -24,7 +24,7 @@ def std_normalizer():
     return lambda g: g / g.std()
 
 
-def to_hwc(x):
+def channels_last(x):
     ndim = x.dim()
     assert ndim in (3, 4)
     if x.dim() == 4:
@@ -32,7 +32,7 @@ def to_hwc(x):
     return x.permute(1, 2, 0)
 
 
-def to_chw(x):
+def channels_first(x):
     ndim = x.dim()
     assert ndim in (3, 4)
     if x.dim() == 4:
@@ -40,15 +40,15 @@ def to_chw(x):
     return x.permute(2, 0, 1)
 
 
-def img_from_numpy(arr2d, unsqueeze=True):
-    img = to_chw(torch.from_numpy(arr2d))
+def img_tensor(arr2d, unsqueeze=True):
+    img = channels_first(torch.from_numpy(arr2d))
     if img.dim() == 3 and unsqueeze:
         img = img.unsqueeze(0)
     return img
 
 
-def img_to_numpy(x):
-    return to_hwc(x).squeeze(0).numpy()
+def img_numpy(x):
+    return channels_last(x).squeeze(0).numpy()
 
 
 def padding_same(in_size, kernel_size, stride=1, dilation=1):

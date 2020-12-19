@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from torchvision.utils import make_grid
 from IPython import display
 
-from lucent.tensor import to_hwc
+from lucent.tensor import channels_last
 
 
 def show_array(img, figsize=(3, 3)):
@@ -29,7 +29,7 @@ def show_arrays(imgs, figsize=(12, 5), nrows=1):
 
 
 def show_tensors(imgs, **kwargs):
-    show_array(to_hwc(make_grid(imgs)), **kwargs)
+    show_array(channels_last(make_grid(imgs)), **kwargs)
 
 
 def show_pil_image(img):
