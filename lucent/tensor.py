@@ -47,6 +47,10 @@ def img_from_numpy(arr2d, unsqueeze=True):
     return img
 
 
+def img_to_numpy(x):
+    return to_hwc(x).squeeze(0).numpy()
+
+
 def padding_same(in_size, kernel_size, stride=1, dilation=1):
     filter_size = (kernel_size - 1) * dilation + 1
     out_size = (in_size + stride - 1) // stride
