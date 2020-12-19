@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from torchvision.utils import make_grid
 from IPython import display
 
-from lucent.utils import to_hwc
+from lucent.tensor import to_hwc
 
 
 def show_array(img, figsize=(3, 3)):
