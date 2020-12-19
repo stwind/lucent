@@ -40,11 +40,11 @@ def optimize(model, optimizer, img, calc_grad, epochs=256):
     return img
 
 
-def calc_by_objective(objective):
+def grad_by_objective(objective):
     return lambda img: objective(img).backward()
 
 
-def calc_by_masked_objectives(objectives):
+def grad_by_masked_objectives(objectives):
     def inner(img):
         n = len(objectives)
         grads = []
