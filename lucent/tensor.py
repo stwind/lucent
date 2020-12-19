@@ -40,8 +40,11 @@ def to_chw(x):
     return x.permute(2, 0, 1)
 
 
-def img_from_numpy(arr2d):
-    return to_chw(torch.from_numpy(arr2d)).unsqueeze(0)
+def img_from_numpy(arr2d, unsqueeze=True):
+    img = to_chw(torch.from_numpy(arr2d))
+    if img.dim() == 3 and unsqueeze:
+        img = img.unsqueeze(0)
+    return img
 
 
 def padding_same(in_size, kernel_size, stride=1, dilation=1):
