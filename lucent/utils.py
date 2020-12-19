@@ -51,7 +51,8 @@ def minmax_scale(x):
 
 
 def decorrelate(img, corr):
-    return torch.einsum("nchw,cd->ndhw", img, torch.from_numpy(corr)).sigmoid()
+    mat = torch.from_numpy(corr)
+    return to_hwc(img).flatten(end_dim=-2).matmul(mat).reshape_as(img).sigmoid()
 
 
 def center_crop(img, size):
