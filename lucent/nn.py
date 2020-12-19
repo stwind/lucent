@@ -89,6 +89,16 @@ class RandomCrop(nn.Module):
         return img[:, :, oh : oh + h, ow : ow + w]
 
 
+class Jitter(nn.Module):
+    def __init__(self, size):
+        super().__init__()
+        self.size = size
+
+    def forward(self, input):
+        sy, sx = np.random.randint(-self.size, self.size, 2)
+        return input.roll(shifts=(sy, sx), dims=(-2, -1))
+
+
 class Pad(nn.Module):
     def __init__(self, size):
         super().__init__()
