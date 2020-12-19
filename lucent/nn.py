@@ -133,7 +133,8 @@ class RandomRotate(nn.Module):
     def forward(self, img):
         # theta = np.random.choice(self.rads)
         # mat = self._rot_mat(theta).unsqueeze(0)
-        mat = np.random.choice(self.mats)
+        # mat = np.random.choice(self.mats)
+        mat = self.mats[np.random.randint(0, len(self.mats))]
 
         grid = F.affine_grid(mat, img.size(), align_corners=False).to(img.device)
         x = F.grid_sample(img, grid, align_corners=False)
