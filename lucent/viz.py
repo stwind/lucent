@@ -28,8 +28,8 @@ class T(AbstractContextManager):
         return self.outputs[key]
 
 
-def optimize(model, optimizer, img, calc_grad, epochs=256):
-    for i in progress_bar(range(epochs)):
+def optimize(model, optimizer, img, calc_grad, epochs=256, leave=True):
+    for i in progress_bar(range(epochs), leave=leave):
         model(img)
 
         calc_grad(img)
