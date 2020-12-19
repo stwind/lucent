@@ -29,7 +29,7 @@ class T(AbstractContextManager):
 
 
 def optimize(
-    model, optimizer, img, calc_grad, epochs=256, leave=True, set_to_none=False
+    model, optimizer, img, calc_grad, epochs=256, leave=True, set_to_none=True
 ):
     for i in progress_bar(range(epochs), leave=leave):
         model(img)
