@@ -14,10 +14,10 @@ class Hooks(AbstractContextManager):
             hook.remove()
 
 
-def lap_normalize(lap_n, filter_size=5):
+def lap_normalizer(lap_n, filter_size=5):
     kernel = torch.from_numpy(binomial_filter(filter_size)).permute(2, 3, 0, 1)
     return lambda g: lap_normalize(g, kernel.to(g.device), lap_n)
 
 
-def normalize_std():
+def std_normalizer():
     return lambda g: g / g.std()
