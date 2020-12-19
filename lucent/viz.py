@@ -4,8 +4,6 @@ from fastprogress.fastprogress import progress_bar
 
 import torch
 
-from lucent.utils import progress_bar
-
 
 class T(AbstractContextManager):
     def __init__(self, modules):
