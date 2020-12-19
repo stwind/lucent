@@ -62,7 +62,7 @@ def fetch(url):
     return Image.open(io.BytesIO(resp.content))
 
 
-def make_image(
+def make_normal(
     size, mean=0, std=0.01, batch=1, dtype=np.float32, corr=COLOR_CORRELATION
 ):
     h, w = (size, size) if isinstance(size, int) else size
@@ -78,7 +78,7 @@ def rfft2d_freqs(h, w):
     return np.sqrt(fx * fx + fy * fy)
 
 
-def make_image_fft(
+def make_fft(
     size,
     sd=0.01,
     batch=1,
