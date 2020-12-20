@@ -3,8 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from lucent.tensor import l2_normalize
-
 
 class DepthWiseConv2d(nn.Conv2d):
     def __init__(self, cin, ks=3, **kwargs):
@@ -124,38 +122,6 @@ class RandomScale(nn.Module):
             align_corners=True,
             scale_factor=(scale, scale),
             recompute_scale_factor=True,
-        )
-
-
-class Sum(nn.Module):
-    def __init__(self, objs):
-        super().__init__()
-        self.objs = objs
-
-    def forward(self, inputs):
-        return sum([o(inputs) * w for o, w in self.objs])
-
-
-class Diversity(nn.Module):
-    def __init__(self, t, name=0):
-        super().__init__()
-        self.t = t
-        self.name = name
-
-    def forward(self, inputs):
-        output = self.t(self.name)
-        n, _, _, c = output.size()
-        flattened = output.reshape((n, -1, c))
-        grams = torch.matmul(flattened.transpose(1, 2), flattened)
-        grams = l2_normalize(grams, (1, 2))
-        return (
-            sum(
-                [
-                    sum([(grams[i] * grams[j]).sum() for j in range(n) if j != i])
-                    for i in range(n)
-                ]
-            )
-            / n
         )
 
 
