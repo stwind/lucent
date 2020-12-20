@@ -143,8 +143,8 @@ class RandomRotate(nn.Module):
         rad = np.random.choice(self.rads)
         size = img.size()
         mat = self._rot_mat(rad).unsqueeze(0).expand((size[0], 2, 3))
-        grid = F.affine_grid(mat, size, align_corners=True).to(img.device)
-        return F.grid_sample(img, grid, align_corners=True)
+        grid = F.affine_grid(mat, size).to(img.device)
+        return F.grid_sample(img, grid)
 
 
 class TotalVariation(nn.Module):
