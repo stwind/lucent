@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from lucent.tensor import l2_normalize
+
 
 class DepthWiseConv2d(nn.Conv2d):
     def __init__(self, cin, ks=3, **kwargs):
@@ -125,11 +127,42 @@ class RandomScale(nn.Module):
         )
 
 
+class Sum(nn.Module):
+    def __init__(self, objs):
+        super().__init__()
+        self.objs = objs
+
+    def forward(self, inputs):
+        return sum([o(inputs) * w for o, w in self.objs])
+
+
+class Diversity(nn.Module):
+    def __init__(self, t, name=0):
+        super().__init__()
+        self.t = t
+        self.name = name
+
+    def forward(self, inputs):
+        output = self.t(self.name)
+        n, _, _, c = output.size()
+        flattened = output.reshape((n, -1, c))
+        grams = torch.matmul(flattened.transpose(1, 2), flattened)
+        grams = l2_normalize(grams, (1, 2))
+        return (
+            sum(
+                [
+                    sum([(grams[i] * grams[j]).sum() for j in range(n) if j != i])
+                    for i in range(n)
+                ]
+            )
+            / n
+        )
+
+
 class RandomRotate(nn.Module):
-    ## https://stackoverflow.com/questions/64197754/how-do-i-rotate-a-pytorch-image-tensor-around-its-center-in-a-way-that-supports
     def __init__(self, rads):
         super().__init__()
-        self.mats = [self._rot_mat(rad) for rad in rads]
+        self.rads = rads
 
     def _rot_mat(self, theta):
         theta = torch.tensor(theta)
@@ -138,13 +171,14 @@ class RandomRotate(nn.Module):
                 [torch.cos(theta), -torch.sin(theta), 0],
                 [torch.sin(theta), torch.cos(theta), 0],
             ]
-        ).unsqueeze(0)
+        )
 
     def forward(self, img):
-        mat = self.mats[np.random.randint(0, len(self.mats))]
-        grid = F.affine_grid(mat, img.size(), align_corners=False).to(img.device)
-        x = F.grid_sample(img, grid, align_corners=False)
-        return x
+        rad = np.random.choice(self.rads)
+        size = img.size()
+        mat = self._rot_mat(rad).unsqueeze(0).expand((size[0], 2, 3))
+        grid = F.affine_grid(mat, size, align_corners=True).to(img.device)
+        return F.grid_sample(img, grid, align_corners=True)
 
 
 class TotalVariation(nn.Module):
