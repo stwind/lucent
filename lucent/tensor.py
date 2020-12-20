@@ -24,6 +24,15 @@ def std_normalizer():
     return lambda g: g / g.std()
 
 
+def l2_normalize(x, dim=None, epsilon=1e-12):
+    """
+    same as `tf.linalg.l2_normalize`
+    """
+    square_sum = x.square().sum(dim, keepdim=True)
+    inv_norm = square_sum.maximum(torch.as_tensor(epsilon)).rsqrt()
+    return x * inv_norm
+
+
 def channels_last(x):
     ndim = x.dim()
     assert ndim in (3, 4)
