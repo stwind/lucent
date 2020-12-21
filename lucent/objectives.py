@@ -4,6 +4,12 @@ import torch.nn as nn
 from lucent.tensor import l2_normalize
 
 
+def maybe_batch(output, batch=None):
+    if batch is not None:
+        return output[batch : batch + 1]
+    return output
+
+
 class Sum(nn.Module):
     def __init__(self, objs):
         super().__init__()
@@ -37,15 +43,17 @@ class Diversity(nn.Module):
 
 
 class Channel(nn.Module):
-    def __init__(self, t, idx, name=0, sign=-1):
+    def __init__(self, t, idx, name=0, sign=-1, batch=None):
         super().__init__()
         self.t = t
         self.idx = idx
         self.name = name
         self.sign = sign
+        self.batch = batch
 
     def forward(self, inputs):
-        return self.sign * self.t(self.name)[:, self.idx].mean()
+        output = maybe_batch(self.t(self.name), self.batch)
+        return self.sign * output[:, self.idx].mean()
 
 
 class Direction(nn.Module):
