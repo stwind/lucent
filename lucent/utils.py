@@ -3,6 +3,8 @@ import os
 import hashlib
 import tempfile
 import requests
+import urllib.request
+import tarfile
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -29,8 +31,9 @@ def to_var(x, device="cpu"):
     return x.to(device).requires_grad_(True)
 
 
-def minmax_scale(x):
-    mn, mx = x.max(), x.min()
+def minmax_scale(x, axis=None):
+    mx = x.max(axis=axis, keepdims=True)
+    mn = x.min(axis=axis, keepdims=True)
     return (x - mn) / (mx - mn)
 
 
@@ -73,3 +76,11 @@ def binomial_filter(n, channel=3, dtype=np.float32):
     return np.expand_dims(k / k.sum(), (2, 3)).astype(dtype) * np.eye(
         channel, dtype=dtype
     )
+
+
+def download_tar(url, path):
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    stream = urllib.request.urlopen(url)
+    with tarfile.open(fileobj=stream, mode="r|gz") as tar:
+        tar.extractall(path=path)
