@@ -78,9 +78,9 @@ def binomial_filter(n, channel=3, dtype=np.float32):
     )
 
 
-def download_tar(url, path):
+def download_tar(url, path, mode="r|gz"):
     if not os.path.isdir(path):
         os.mkdir(path)
     stream = urllib.request.urlopen(url)
-    with tarfile.open(fileobj=stream, mode="r|gz") as tar:
+    with tarfile.open(fileobj=stream, mode=mode) as tar:
         tar.extractall(path=path)
